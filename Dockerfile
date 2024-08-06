@@ -1,10 +1,20 @@
-FROM debian:latest
+FROM python:3.10-slim
 
-RUN apt update && apt upgrade -y
-RUN apt install git curl python3-pip -y
-RUN pip3 install -U pip
-RUN mkdir /app/
+# Install necessary packages
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create application directory
 WORKDIR /app/
+
+# Copy application files
 COPY . /app/
-RUN pip3 install -U -r requirements.txt
-CMD python3 ban.py
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set the command to run the application
+CMD ["python", "ban.py"]
